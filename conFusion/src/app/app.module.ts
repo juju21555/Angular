@@ -36,6 +36,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms'; 
 
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -57,14 +62,18 @@ import { FormsModule } from '@angular/forms';
     MatDialogModule,
     MatFormFieldModule, 
     MatInputModule,
-    MatCheckboxModule,
-    BrowserModule,
-    BrowserAnimationsModule,
     MatToolbarModule,
     MatListModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatProgressSpinnerModule,
+    BrowserModule,
+    BrowserAnimationsModule,
     FlexLayoutModule,
     AppRoutingModule,
-    FormsModule 
+    FormsModule,
+    ReactiveFormsModule
   ],
 
   providers: [

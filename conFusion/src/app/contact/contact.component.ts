@@ -2,11 +2,26 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Feedback, ContactType } from '../shared/feedback';
+import { flyInOut, expand } from '../animations/app.animation';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ProcessHTTPMsgService } from '../services/process-httpmsg.service';
+
+import { baseURL } from '../shared/baseurl';
+import { catchError, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss']
+  styleUrls: ['./contact.component.scss'],
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+    },
+  animations: [
+    flyInOut(),
+    expand()
+  ]
 })
 
 
@@ -16,7 +31,10 @@ export class ContactComponent implements OnInit {
 
   feedbackForm: FormGroup;
   feedback: Feedback;
+  feedbackres: Feedback;
   contactType = ContactType;
+  errMess: string;
+  submited = false;
 
   formErrors = {
     'firstname': '',
@@ -46,7 +64,9 @@ export class ContactComponent implements OnInit {
     },
   };
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private http: HttpClient,
+              private processHTTPMsgService: ProcessHTTPMsgService) {
     this.createForm();
   }
 
@@ -70,7 +90,19 @@ export class ContactComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submited = true;
     this.feedback = this.feedbackForm.value;
+
+    this.submitFeedback(this.feedback)
+      .subscribe(feedback => {
+        this.feedbackres = feedback; 
+        setTimeout(()=>{
+          this.feedbackres = undefined; 
+          this.submited = false;
+        }, 5000)
+      });
+
+
     this.feedbackFormDirective.resetForm();
     this.feedbackForm.reset({
       firstname: '',
@@ -101,6 +133,17 @@ export class ContactComponent implements OnInit {
         }
       }
     }
+  }
+
+  submitFeedback(fb: Feedback): Observable<Feedback> {
+    
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.http.post<Feedback>(baseURL + 'feedback', fb, httpOptions)
+      .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
 }

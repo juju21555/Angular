@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div fxFill>
+  <div fxFill *ngIf="dish" [@visibility]="visibility">
     <mat-card>
         <mat-card-title>
             <h3 >{{dish.name | uppercase}}</h3>
@@ -38,7 +38,7 @@
     </mat-card>
     <hr>
   </div>
-  <div fxFill>
+  <div fxFill *ngIf="dish" [@visibility]="visibility">
     <h1>Comments</h1>
     <mat-list-item *ngFor="let dish_com of dish.comments">
       <div mat-line> {{dish_com.comment}}  </div>

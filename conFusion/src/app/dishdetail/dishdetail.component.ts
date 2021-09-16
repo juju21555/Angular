@@ -10,12 +10,19 @@ import { Location } from '@angular/common';
 import { Comment } from '../shared/comment';
 import { switchMap } from 'rxjs/operators';
 
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import { flyInOut, visibility, expand } from '../animations/app.animation';
+
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss']
+  styleUrls: ['./dishdetail.component.scss'],
+  animations: [
+    visibility(),
+    flyInOut(),
+    expand()
+  ]
 })
-
 
 export class DishdetailComponent implements OnInit {
 
@@ -30,6 +37,7 @@ export class DishdetailComponent implements OnInit {
   prev: string;
   next: string;
   errMess: string;
+  visibility = 'shown';
   
 
   formErrors = {
@@ -64,10 +72,9 @@ export class DishdetailComponent implements OnInit {
     this.dishService.getDishIds()
     .subscribe(dishIds => this.dishIds = dishIds,
       errmess => this.errMess = <any>errmess);
-    this.route.params
-      .pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
-      .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
-        errmess => this.errMess = <any>errmess );
+    this.route.params.pipe(switchMap((params: Params) => { this.visibility = 'hidden'; return this.dishService.getDish(+params['id']); }))
+    .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); this.visibility = 'shown'; },
+      errmess => this.errMess = <any>errmess);
   }
 
   setPrevNext(dishId: string) {

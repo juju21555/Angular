@@ -115,7 +115,7 @@ export class DishdetailComponent implements OnInit {
       date: new Date(),
     });
 
-    this.dishcopy.comments.push(this.comment);
+    //this.dishcopy.comments.push(this.comment);
     this.dishService.putDish(this.dishcopy)
       .subscribe(dish => {
         this.dish = dish; this.dishcopy = dish;
